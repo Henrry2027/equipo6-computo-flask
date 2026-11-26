@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Reporte de Fallas Técnicas · Equipo 6{% endblock %}
+
+{% block content %}
+<section class="card">
+  <div class="card-header">
+    <h2>Reporte de Fallas Técnicas</h2>
+    <p>Registro de incidencias en equipos de cómputo con cálculo interactivo de prioridad y validación en Flask.</p>
+  </div>
+
+  {% if errores %}
+  <div class="alert alert-error">
+    <strong>Revisa los siguientes campos:</strong>
+    <ul>
+      {% for error in errores %}
+      <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if reporte %}
+  <div class="alert alert-success">
+    <strong>¡Reporte de falla enviado con éxito!</strong>
+    <p>
+      Equipo: <b>{{ reporte.codigo_equipo }}</b> ·
+      Categoría: <b>{{ reporte.categoria_falla }}</b> ·
+      Prioridad: <b>{{ reporte.prioridad }}</b> ·
+      Reportó: <b>{{ reporte.reportado_por }}</b>
+    </p>
+  </div>
+  {% endif %}
+
+  <form id="formReporteFalla" action="{{ url_for('reporte_falla') }}" method="POST" class="form-grid" novalidate>
+    <div class="form-group">
+      <label for="codigo_equipo">Código del equipo *</label>
+      <input
+        type="text"
+        id="codigo_equipo"
+        name="codigo_equipo"
+        placeholder="Ej. PC-LAB1-014"
+        value="{{ datos.get('codigo_equipo', '') }}"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="reportado_por">Reportado por *</label>
+      <input
+        type="text"
+        id="reportado_por"
+        name="reportado_por"
+        placeholder="Tu nombre"
+        value="{{ datos.get('reportado_por', '') }}"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="categoria_falla">Categoría de la falla *</label>
+      <select id="categoria_falla" name="categoria_falla">
+        <option value="">Selecciona una categoría</option>
+        {% for cat in ["No enciende", "Pantalla / Video", "Sistema Operativo / Software", "Red / Internet", "Teclado / Mouse / Puertos", "Energía / Batería"] %}
+        <option value="{{ cat }}" {% if datos.get('categoria_falla') == cat %}selected{% endif %}>{{ cat }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="prioridad">Prioridad *</label>
+      <select id="prioridad" name="prioridad">
+        {% for prio in ["Baja", "Media", "Alta", "Crítica"] %}
+        <option value="{{ prio }}" {% if datos.get('prioridad', 'Media') == prio %}selected{% endif %}>{{ prio }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group full-width">
+      <label for="bloquea_trabajo">¿Impide el uso normal del equipo?</label>
+      <select id="bloquea_trabajo" name="bloquea_trabajo">
+        <option value="no" {% if datos.get('bloquea_trabajo') == 'no' %}selected{% endif %}>No, se puede usar parcialmente</option>
+        <option value="si" {% if datos.get('bloquea_trabajo') == 'si' %}selected{% endif %}>Sí, deja el equipo inutilizable</option>
+      </select>
+    </div>
+
+    <div class="form-group full-width">
+      <label for="descripcion">Descripción detallada de la falla *</label>
+      <textarea
+        id="descripcion"
+        name="descripcion"
+        rows="4"
+        placeholder="Explica qué ocurre, mensajes de error o cuándo empezó..."
+      >{{ datos.get('descripcion', '') }}</textarea>
+      <small id="contadorCaracteres" class="helper-text">0 / 10 caracteres mínimos recomendados</small>
+    </div>
+
+    <div class="form-actions full-width">
+      <button type="submit" class="btn-primary">Enviar reporte</button>
+      <a href="{{ url_for('registro_equipo') }}" class="btn-link">← Volver a Registro de Equipos</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

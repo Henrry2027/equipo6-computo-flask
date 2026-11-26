@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Equipo 6 · Gestión de Cómputo y Fallas{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <span class="badge">EQUIPO 6</span>
+        <div>
+          <h1>Soporte &amp; Cómputo Flask</h1>
+          <p>Inventario de equipos y reporte de fallas técnicas</p>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="{{ url_for('registro_equipo') }}" class="{% if request.endpoint in ['inicio', 'registro_equipo'] %}active{% endif %}">
+          1. Registro de Equipos
+        </a>
+        <a href="{{ url_for('reporte_falla') }}" class="{% if request.endpoint == 'reporte_falla' %}active{% endif %}">
+          2. Reporte de Fallas
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
+

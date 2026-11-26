@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Registro de Equipos de Cómputo · Equipo 6{% endblock %}
+
+{% block content %}
+<section class="card">
+  <div class="card-header">
+    <h2>Registro de Equipos de Cómputo</h2>
+    <p>Alta de hardware institucional o de laboratorio con validación en Flask y apoyo interactivo en JavaScript.</p>
+  </div>
+
+  {% if errores %}
+  <div class="alert alert-error">
+    <strong>Revisa los siguientes campos:</strong>
+    <ul>
+      {% for error in errores %}
+      <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if registro %}
+  <div class="alert alert-success">
+    <strong>¡Equipo registrado correctamente!</strong>
+    <p>
+      Código: <b>{{ registro.codigo_inventario }}</b> ·
+      Tipo: <b>{{ registro.tipo_equipo }}</b> ·
+      Modelo: <b>{{ registro.marca_modelo }}</b> ·
+      Área: <b>{{ registro.area_asignada }}</b> ·
+      Estado: <b>{{ registro.estado }}</b>
+    </p>
+  </div>
+  {% endif %}
+
+  <form id="formRegistroEquipo" action="{{ url_for('registro_equipo') }}" method="POST" class="form-grid" novalidate>
+    <div class="form-group">
+      <label for="codigo_inventario">Código de inventario *</label>
+      <div class="input-with-btn">
+        <input
+          type="text"
+          id="codigo_inventario"
+          name="codigo_inventario"
+          placeholder="Ej. PC-LAB1-014"
+          value="{{ datos.get('codigo_inventario', '') }}"
+        />
+        <button type="button" id="btnGenerarCodigo" class="btn-secondary">Sugerir código</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="tipo_equipo">Tipo de equipo *</label>
+      <select id="tipo_equipo" name="tipo_equipo">
+        <option value="">Selecciona una opción</option>
+        {% for item in ["Laptop", "PC de Escritorio", "Monitor", "Impresora", "Proyector", "Switch / Red"] %}
+        <option value="{{ item }}" {% if datos.get('tipo_equipo') == item %}selected{% endif %}>{{ item }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="marca_modelo">Marca y modelo *</label>
+      <input
+        type="text"
+        id="marca_modelo"
+        name="marca_modelo"
+        placeholder="Ej. Lenovo ThinkPad E14 Gen 5"
+        value="{{ datos.get('marca_modelo', '') }}"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="numero_serie">Número de serie *</label>
+      <input
+        type="text"
+        id="numero_serie"
+        name="numero_serie"
+        placeholder="Ej. PF4X8921"
+        value="{{ datos.get('numero_serie', '') }}"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="area_asignada">Área o laboratorio *</label>
+      <input
+        type="text"
+        id="area_asignada"
+        name="area_asignada"
+        placeholder="Ej. Laboratorio de Cómputo 2"
+        value="{{ datos.get('area_asignada', '') }}"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="responsable">Responsable asignado *</label>
+      <input
+        type="text"
+        id="responsable"
+        name="responsable"
+        placeholder="Nombre completo"
+        value="{{ datos.get('responsable', '') }}"
+      />
+    </div>
+
+    <div class="form-group full-width">
+      <label for="estado">Estado actual *</label>
+      <select id="estado" name="estado">
+        {% for st in ["Activo", "En mantenimiento", "Resguardo"] %}
+        <option value="{{ st }}" {% if datos.get('estado', 'Activo') == st %}selected{% endif %}>{{ st }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group full-width">
+      <p id="mensajeJsEquipo" class="helper-text">Listo para registrar un nuevo equipo.</p>
+    </div>
+
+    <div class="form-actions full-width">
+      <button type="submit" class="btn-primary">Guardar equipo</button>
+      <a href="{{ url_for('reporte_falla') }}" class="btn-link">Ir a Reporte de Fallas →</a>
+    </div>
+  </form>
+</section>
+{% endblock %}
